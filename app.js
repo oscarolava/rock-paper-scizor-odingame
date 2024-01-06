@@ -1,7 +1,3 @@
-let playerSelection = getPlayerSelection();
-const computerSelection = getComputerChoice();
-
-
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -21,15 +17,23 @@ function getComputerChoice() {
     
   }
 
-function getPlayerSelection() {
-    seleccionPlayer = prompt("Ingrese su selección (Roca o Papel o Tijeras): ");
+  function getPlayerSelection() {
+    while (true) {
+        let seleccionPlayer = prompt("Ingrese su selección (Roca, Papel o Tijeras): ");
 
-    if (seleccionPlayer.toLowerCase() == "roca") {
-        return "Roca"
-    } else if (seleccionPlayer.toLowerCase() == "papel") {
-        return "Papel"
-    } else if (seleccionPlayer.toLowerCase() == "tijeras") {
-        return "Tijeras"
+        if (seleccionPlayer !== null) {
+            seleccionPlayer = seleccionPlayer.trim().toLowerCase();
+
+            if (seleccionPlayer === "roca" || seleccionPlayer === "papel" || seleccionPlayer === "tijeras") {
+                return seleccionPlayer.charAt(0).toUpperCase() + seleccionPlayer.slice(1);
+            } else {
+                alert("Por favor, ingrese una opción válida (Roca, Papel o Tijeras).");
+            }
+        } else {
+            // El usuario presionó Cancelar o cerró el cuadro de diálogo, manejar según sea necesario.
+            // Por ejemplo, puedes regresar null o un valor predeterminado.
+            return null;
+        }
     }
 }
 
@@ -37,21 +41,59 @@ function getPlayerSelection() {
 function playRound(playerSelection, computerSelection) {
     // En esta función va la lógica del juego
 
+    let playerScore = 0;
+    let computerScore = 0;
+    let tieScore = 0;
+
     if (playerSelection == computerSelection){
-        return "Han empatado este juego"
+        console.log("Han empatado este juego");
+        return [playerScore, computerScore, ++tieScore]
     } else if (playerSelection == "Roca" && computerSelection == "Papel") {
-        return 'Has perdido! ${computerSelection} vence a ${playerSelection}'
+        console.log(`Has perdido! ${computerSelection} vence a ${playerSelection}`);
+        return [playerScore, ++computerScore, tieScore]
     } else if (playerSelection == "Roca" && computerSelection == "Tijeras") {
-        return 'Has ganado! ${playerSelection} vence a ${computerSelection}'
+        console.log(`Has ganado! ${playerSelection} vence a ${computerSelection}`);
+        return [++playerScore, computerScore, tieScore]
     } else if (playerSelection == "Papel" && computerSelection == "Roca") {
-        return 'Has ganado! ${playerSelection} vence a ${computerSelection}'
+        console.log(`Has ganado! ${playerSelection} vence a ${computerSelection}`);
+        return [++playerScore, computerScore, tieScore]
     } else if (playerSelection == "Papel" && computerSelection == "Tijeras") {
-        return 'Has perdido! ${computerSelection} vence a ${playerSelection}'
+        console.log(`Has perdido! ${computerSelection} vence a ${playerSelection}`);
+        return [playerScore, ++computerScore, tieScore]
     } else if (playerSelection == "Tijeras" && computerSelection == "Roca") {
-        return 'Has perdido! ${computerSelection} vence a ${playerSelection}'
+        console.log(`Has perdido! ${computerSelection} vence a ${playerSelection}`);
+        return [playerScore, ++computerScore, tieScore]
     } else if (playerSelection == "Tijeras" && computerSelection == "Papel") {
-        return 'Has ganado! ${playerSelection} vence a ${computerSelection}'
+        console.log(`Has ganado! ${playerSelection} vence a ${computerSelection}`);
+        return [++playerScore, computerScore, tieScore]
     }
 }
 
-console.log(playRound(playerSelection, computerSelection))
+function game() {
+    let pScore = 0;
+    let cScore = 0;
+    let tScore = 0;
+
+    for (let i = 1; i <= 5; i++) {
+        let [roundPScore, roundCScore, roundTScore] = playRound(getPlayerSelection(), getComputerChoice());
+        pScore += roundPScore;
+        cScore += roundCScore;
+        tScore += roundTScore;
+    }
+    // Falta la lógica para determinar el ganador
+    console.log(`Puntuación final:\nJugador: ${pScore}\nComputadora: ${cScore}\nEmpates: ${tScore}`);
+    console.log(verificarGanador(cScore, pScore, tScore));
+}
+
+function verificarGanador(a, b, c) {
+    if (a > b) {
+        return "¡La computadora gana!";
+    } else if (b > a) {
+        return "¡El jugador gana!";
+    } else {
+        return "¡Es un empate!";
+    }
+}
+
+
+game();
